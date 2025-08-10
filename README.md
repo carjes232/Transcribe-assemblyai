@@ -1,4 +1,4 @@
-# 🎙 AssemblyAI Tk Transcriber (60s chunks + overlap)
+# 🎙 AssemblyAI Tk Transcriber (30 min chunks + overlap)
 
 A small desktop app (Tkinter) to transcribe local audio files with **AssemblyAI**.
 
