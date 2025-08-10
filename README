@@ -1,0 +1,158 @@
+Here’s the **full updated README.md** with the **Windows + Chocolatey install** steps included from the start.
+
+---
+
+````markdown
+# 🎙 AssemblyAI Tk Transcriber (60s chunks + overlap)
+
+A small desktop app (Tkinter) to transcribe local audio files with **AssemblyAI**.
+
+It:
+- Loads `.m4a`, `.mp3`, `.wav`, etc. (via **ffmpeg** + **pydub**)
+- Lets you choose the **language** (or auto-detect)
+- Splits audio into **60s chunks** with **overlap** (configurable)
+- Saves **per-chunk** transcripts **and** a **full joined** transcript
+
+> ⚠️ You need an **AssemblyAI API key** (paid or free tier). Don’t commit it—store it in `.env`.
+
+---
+
+## ✨ Features
+- Simple GUI (pick file, language, chunk size, overlap)
+- Works with `.m4a` (common from iPhone voice notes) and many formats
+- Safer on Python 3.13 with `audioop-lts` backport
+- Outputs:
+  - `YourFile_FULL.txt`
+  - `YourFile_parts/YourFile_partXXX_...txt`
+
+---
+
+## 🖥 Windows Installation (Step-by-Step)
+
+### 1️⃣ Install Chocolatey (One-time setup)
+Chocolatey makes it easy to install `ffmpeg`.
+
+1. **Open PowerShell as Administrator**  
+   - Press **Start**, type `PowerShell`, right-click, select **Run as administrator**.
+
+2. **Run this command**:
+   ```powershell
+   Set-ExecutionPolicy Bypass -Scope Process -Force; `
+   [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; `
+   iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+````
+
+3. **Close and reopen** PowerShell to refresh PATH.
+   Verify:
+
+   ```powershell
+   choco -v
+   ```
+
+---
+
+### 2️⃣ Install ffmpeg
+
+In **Administrator PowerShell**:
+
+```powershell
+choco install ffmpeg -y
+```
+
+Verify:
+
+```powershell
+ffmpeg -version
+```
+
+If you see version info, `ffmpeg` is ready.
+
+---
+
+### 3️⃣ Clone and prepare the project
+
+1. **Open a normal PowerShell** (no admin) and go to your folder:
+
+   ```powershell
+   cd "C:\Path\To\Transcribe"
+   ```
+
+2. **Create and activate** a virtual environment:
+
+   ```powershell
+   python -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   ```
+
+3. **Install dependencies**:
+
+   ```powershell
+   pip install -U pip
+   pip install assemblyai pydub python-dotenv audioop-lts
+   ```
+
+---
+
+### 4️⃣ Add your API key
+
+Create a file `.env` in the project root:
+
+```
+ASSEMBLYAI_API_KEY=your_real_api_key_here
+```
+
+Or paste it directly in the app when running.
+
+---
+
+### 5️⃣ Run the app
+
+```powershell
+python main.py
+```
+
+* Pick your audio file
+* Choose a language or `ALD` for auto-detect
+* Adjust chunk/overlap if needed
+* Click **Transcribe**
+
+---
+
+## 📂 Output
+
+* **Full transcript**: `YourFile_FULL.txt`
+* **Per-chunk transcripts**: `YourFile_parts/*.txt` with timestamps in filenames
+
+---
+
+## 🛠 Troubleshooting
+
+**“ffmpeg is not recognized”**
+
+* Make sure `ffmpeg -version` works in PowerShell
+* If not, reinstall via Chocolatey (admin):
+
+  ```powershell
+  choco install ffmpeg -y
+  ```
+
+**`ModuleNotFoundError: audioop` on Python 3.13**
+
+* Install backport:
+
+  ```powershell
+  pip install audioop-lts
+  ```
+* Or use Python 3.12 for maximum compatibility
+
+**Large files or rate limits**
+
+* Keep chunk size at 60s
+* Use 3–5s overlap for context continuity
+
+---
+
+## 🔒 Security & Privacy
+
+* API key stays local (in `.env` or entered in GUI)
+* Audio and transcripts are ignored by `.gitignore` to avoid accidental commits
